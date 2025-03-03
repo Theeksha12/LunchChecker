@@ -1,41 +1,22 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="ShoppingListCheckOff">
+<html lang="en" ng-app="NarrowItDownApp">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shopping List Check-Off</title>
-  <link rel="stylesheet" href="styles.css"> <!-- optional, for styling -->
+    <meta charset="UTF-8">
+    <title>Menu Search</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body ng-controller="ToBuyController as toBuyCtrl">
-  
-  <h1>Shopping List</h1>
-  
-  <div class="list-container">
-    <!-- To Buy List -->
-    <div class="list" ng-controller="ToBuyController as toBuyCtrl">
-      <h2>To Buy</h2>
-      <ul>
-        <li ng-repeat="item in toBuyCtrl.items">
-          Buy {{item.quantity}} {{item.name}}
-          <button ng-click="toBuyCtrl.buyItem(item)">Bought</button>
-        </li>
-      </ul>
-      <p ng-if="toBuyCtrl.items.length === 0">Everything is bought!</p>
-    </div>
-    
-    <!-- Already Bought List -->
-    <div class="list" ng-controller="AlreadyBoughtController as alreadyBoughtCtrl">
-      <h2>Already Bought</h2>
-      <ul>
-        <li ng-repeat="item in alreadyBoughtCtrl.items">
-          Bought {{item.quantity}} {{item.name}}
-        </li>
-      </ul>
-      <p ng-if="alreadyBoughtCtrl.items.length === 0">Nothing bought yet</p>
-    </div>
-  </div>
+<body>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
-  <script src="app.js"></script>
+<div ng-controller="NarrowItDownController as ctrl">
+    <input type="text" ng-model="ctrl.searchTerm" placeholder="Search for menu items">
+    <button ng-click="ctrl.narrowItDown()">Narrow It Down For Me!</button>
+    
+    <p ng-if="ctrl.errorMessage">{{ ctrl.errorMessage }}</p>
+
+    <found-items found="ctrl.found" on-remove="ctrl.removeItem(index)"></found-items>
+</div>
+
 </body>
 </html>
