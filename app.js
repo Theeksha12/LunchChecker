@@ -1,71 +1,46 @@
 (function () {
   'use strict';
 
-  angular.module('NarrowItDownApp', [])
-  .controller('NarrowItDownController', NarrowItDownController)
-  .service('MenuSearchService', MenuSearchService)
-  .directive('foundItems', FoundItemsDirective);
+  angular.module('MenuApp', ['ui.router'])
+  .service('MenuDataService', ['$http', function ($http) {
+    var service = this;
 
-  // Inject dependencies
-  NarrowItDownController.$inject = ['MenuSearchService'];
-  
-  function NarrowItDownController(MenuSearchService) {
-      var ctrl = this;
-      ctrl.searchTerm = "";
-      ctrl.found = [];
+    service.getAllCategories = function () {
+      return $http.get('https://coursera-jhu-default-rtdb.firebaseio.com/categories.json')
+        .then(response => response.data);
+    };
 
-      ctrl.narrowItDown = function () {
-          if (!ctrl.searchTerm) {
-              ctrl.found = [];
-              ctrl.errorMessage = "Nothing found";
-              return;
-          }
+    service.getItemsForCategory = function (categoryShortName) {
+      return $http.get(`https://coursera-jhu-default-rtdb.firebaseio.com/menu_items/${categoryShortName}.json`)
+        .then(response => response.data.menu_items);
+    };
+  }])
+  .config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
+    $urlRouterProvider.otherwise('/');
 
-          var promise = MenuSearchService.getMatchedMenuItems(ctrl.searchTerm);
-          promise.then(function (foundItems) {
-              ctrl.found = foundItems;
-              ctrl.errorMessage = foundItems.length === 0 ? "Nothing found" : "";
-          });
-      };
+    $stateProvider
+      .state('home', {
+        url: '/',
+        template: '<h1>Welcome to our Restaurant</h1><a ui-sref="categories">View Categories</a>'
+      })
+      .state('categories', {
+        url: '/categories',
+        template: '<ul><li ng-repeat="category in catCtrl.categories"><a ui-sref="items({ categoryShortName: category.short_name })">{{ category.name }}</a></li></ul>',
+        controller: ['MenuDataService', function (MenuDataService) {
+          var catCtrl = this;
+          MenuDataService.getAllCategories().then(data => catCtrl.categories = data);
+        }],
+        controllerAs: 'catCtrl'
+      })
+      .state('items', {
+        url: '/items/{categoryShortName}',
+        template: '<ul><li ng-repeat="item in itemCtrl.items">{{ item.name }} - {{ item.description }}</li></ul>',
+        controller: ['$stateParams', 'MenuDataService', function ($stateParams, MenuDataService) {
+          var itemCtrl = this;
+          MenuDataService.getItemsForCategory($stateParams.categoryShortName).then(data => itemCtrl.items = data);
+        }],
+        controllerAs: 'itemCtrl'
+      });
+  }]);
 
-      ctrl.removeItem = function (index) {
-          ctrl.found.splice(index, 1);
-      };
-  }
-
-  MenuSearchService.$inject = ['$http'];
-  
-  function MenuSearchService($http) {
-      var service = this;
-      var apiUrl = "https://coursera-jhu-default-rtdb.firebaseio.com/menu_items.json";
-
-      service.getMatchedMenuItems = function (searchTerm) {
-          return $http.get(apiUrl).then(function (response) {
-              var allItems = response.data;
-              var foundItems = [];
-
-              // Loop through categories and filter items
-              for (var category in allItems) {
-                  allItems[category].menu_items.forEach(function (item) {
-                      if (item.description.toLowerCase().includes(searchTerm.toLowerCase())) {
-                          foundItems.push(item);
-                      }
-                  });
-              }
-
-              return foundItems;
-          });
-      };
-  }
-
-  function FoundItemsDirective() {
-      return {
-          restrict: 'E',
-          templateUrl: 'foundItems.html',
-          scope: {
-              found: '<',
-              onRemove: '&'
-          }
-      };
-  }
 })();
