@@ -2,18 +2,36 @@
 <html lang="en" ng-app="MenuApp">
 <head>
     <meta charset="UTF-8">
-    <title>Restaurant Menu</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.3/angular-ui-router.min.js"></script>
-    <script src="menuapp.module.js"></script>
-    <script src="data.module.js"></script>
-    <script src="menudata.service.js"></script>
-    <script src="categories.component.js"></script>
-    <script src="items.component.js"></script>
-    <script src="routes.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Restaurant Sign-Up</title>
+
+    <!-- CSS File -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- AngularJS Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <!-- AngularJS Routing -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-route.min.js"></script>
 </head>
 <body>
-    <ui-view></ui-view>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="#!/signup">Sign Up</a></li>
+            <li><a href="#!/myinfo">My Info</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content (Where Views Will Load) -->
+    <div ng-view></div>
+
+    <!-- Include JavaScript Files -->
+    <script src="app.js"></script>
+    <script src="user.service.js"></script>
+    <script src="signup.controller.js"></script>
+    <script src="myinfo.controller.js"></script>
+
 </body>
 </html>
