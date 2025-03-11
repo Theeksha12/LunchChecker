@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="MenuApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Info</title>
+
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container */
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            margin: 40px auto;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Headings */
+        h2 {
+            text-align: center;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        /* Information Display */
+        p {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        /* Favorite Dish Image */
+        .favorite-img {
+            border-radius: 10px;
+            margin-top: 10px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Sign Up Link */
+        .signup-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>My Info</h2>
+
+    <!-- If user hasn't signed up -->
+    <div ng-if="!myinfoCtrl.user">
+        <p>Not Signed Up Yet. <a href="#!/signup">Sign up Now!</a></p>
+    </div>
+
+    <!-- If user has signed up, display their details -->
+    <div ng-if="myinfoCtrl.user">
+        <p><strong>First Name:</strong> {{ myinfoCtrl.user.firstName }}</p>
+        <p><strong>Last Name:</strong> {{ myinfoCtrl.user.lastName }}</p>
+        <p><strong>Email:</strong> {{ myinfoCtrl.user.email }}</p>
+        <p><strong>Phone:</strong> {{ myinfoCtrl.user.phone }}</p>
+        <p><strong>Favorite Dish:</strong> {{ myinfoCtrl.user.favoriteItem.name }}</p>
+        <img ng-src="{{ myinfoCtrl.user.favoriteItem.image }}" class="favorite-img" width="200">
+    </div>
+</div>
+
+</body>
+</html>
